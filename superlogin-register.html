@@ -1,0 +1,114 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<dom-module id="superlogin-register">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]</h2>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'superlogin-register',
+
+      behaviors: [Polymer.AppLocalizeBehavior],
+      properties: {
+        language: {
+          type: String,
+          notify: true,
+          value: 'en'
+        },
+        resources: {
+          type: Object,
+          notify: true
+        },
+        authUrl: {
+          type: String,
+          notify: true
+        },
+        username: {
+          type: String,
+          // observer: 'updateInfo',
+          notify: true
+        },
+        password: {
+          type: String,
+          // observer: 'updateInfo',
+          notify: true
+        },
+        userInfo: {
+          type: Object,
+          value: function() {
+            return {};
+          },
+          notify: true
+        },
+        responseMsg: {
+          type: Object,
+          notify: true
+        },
+        registrationResponse: {
+          type: Object,
+          notify: true
+        },
+        liveSession: {
+          type: Object,
+          notify: true
+        },
+        session: {
+          type: Object,
+          notify: true
+        },
+        registrationParams: {
+          type: Object,
+          notify: true
+        },
+        loginParams: {
+          type: Object,
+          notify: true
+        },
+        msg: {
+          type: Object,
+          notify: true
+        }
+      },
+      // updateInfo: function(updates) {
+      //   var info = {};
+      //   info.password = this.password;
+      //   info.confirmPassword = this.password;
+      //   info.username = this.username;
+      //   if (updates !== undefined && updates !== null) {
+      //     for (var k in updates) {
+      //       if (updates.hasOwnProperty(k)) {
+      //         this.set('userInfo.k', updates.hasOwnProperty(k));
+      //       }
+      //     }
+      //   }
+      // },
+      register: function() {
+        this.set(registrationParams, this.userInfo);
+      },
+      handleRegistrationResponse: function() {
+        if (this.registrationResponse.error === undefined && this.registrationResponse.error === null) {
+          var validationErrors = "";
+          for (var item in this.registrationResponse.validationErrors) {
+            if (this.registrationResponse.validationErrors.hasOwnProperty(item)) {
+              validationErrors = validationErrors + "<br/>" + this.registrationResponse.validationErrors.item;
+            }
+          }
+          this.set('msg', localize('registrationError', 'username', this.username));
+        } else {
+          this.set('msg', localize('registrationOk', 'username', this.username));
+        }
+      },
+      handleLoginResponse: function() {
+        this.liveSession;
+      },
+
+    });
+  </script>
+</dom-module>
