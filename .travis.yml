@@ -20,5 +20,5 @@ addons:
       - g++-4.8
   sauce_connect: true
 script:
-  - xvfb-run wct
+  - xvfb-run wct --skip-plugin sauce
   - "if [ \"${TRAVIS_PULL_REQUEST}\" = \"false\" ]; then wct -s 'default'; fi"
