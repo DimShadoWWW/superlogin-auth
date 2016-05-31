@@ -50,6 +50,28 @@
         assert.equal(element.is, 'superlogin-register');
       });
 
+    suite('register new user', function() {
+      setup(function() {
+        // get fresh instance of iron-ajax before every test
+        ajax = fixture('simple-get');
+      });
+      test('has sane defaults that love you', function() {
+        request = ajax.generateRequest();
+        server.respond();
+        expect(request.response).to.be.ok;
+        expect(request.response).to.be.an('object');
+        expect(request.response.success).to.be.equal(true);
+      });
+      test('has the correct xhr method', function() {
+        request = ajax.generateRequest();
+        expect(request.xhr.method).to.be.equal('POST');
+      });
+      test('register new user', function() {
+        request = ajax.generateRequest();
+        expect(request.xhr.method).to.be.equal('POST');
+      });
+    });
+
     });
   </script>
 </body>
