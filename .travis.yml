@@ -2,7 +2,7 @@ language: node_js
 sudo: required
 dist: trusty
 before_script:
-  - npm install -g bower polylint web-component-tester
+  - npm install -g bower polylint web-component-tester polymer-cli
   - bower install
   - polylint
 env:
@@ -20,5 +20,4 @@ addons:
       - g++-4.8
   sauce_connect: true
 script:
-  - xvfb-run wct --skip-plugin sauce
-  - "if [ \"${TRAVIS_PULL_REQUEST}\" = \"false\" ]; then wct --skip-plugin sauce -s 'default'; fi"
+  - polymer test
