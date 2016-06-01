@@ -9,7 +9,7 @@
       }
     </style>
 
-    <iron-ajax url="{{authUrl}}/auth/register" params="{{registrationParams}}" handle-as="json" last-response="{{registrationResponse}}">
+    <iron-ajax id="ajax" url="{{authUrl}}/auth/register" handle-as="json" last-response="{{registrationResponse}}">
     </iron-ajax>
   </template>
 
@@ -66,10 +66,6 @@
           type: Object,
           notify: true
         },
-        registrationParams: {
-          type: Object,
-          notify: true
-        },
         loginParams: {
           type: Object,
           notify: true
@@ -93,7 +89,8 @@
       //   }
       // },
       register: function() {
-        this.set(registrationParams, this.userInfo);
+        this.$.ajax.params = this.userInfo;
+        this.$.ajax.generateRequest();
       },
       handleRegistrationResponse: function() {
         if (this.registrationResponse.error === undefined && this.registrationResponse.error === null) {
