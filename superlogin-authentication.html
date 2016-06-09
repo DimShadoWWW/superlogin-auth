@@ -72,7 +72,7 @@
         };
         this.$.ajax.generateRequest();
       },
-      handleloginResponse: function() {
+      handleLoginResponse: function() {
         if (this.loginResponse.error === undefined && this.loginResponse.error === null) {
           var validationErrors = "";
           for (var item in this.loginResponse.validationErrors) {
@@ -84,8 +84,9 @@
         } else {
           this.set('msg', localize('registrationOk', 'username', this.username));
           this.set('liveSession', this.loginResponse);
+          this.fire('logged');
         }
-      }
+      },
     });
   </script>
 </dom-module>
