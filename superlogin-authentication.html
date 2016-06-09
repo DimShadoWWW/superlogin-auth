@@ -10,7 +10,7 @@
       }
     </style>
 
-    <iron-ajax id="ajax" headers="{{header}}" url="{{authUrl}}/auth/login" handle-as="json" on-response="handleLoginResponse" last-response="{{loginResponse}}" method="POST">
+    <iron-ajax id="ajax" headers='{"Content-Type": "application/json"}' url="{{authUrl}}/auth/login" handle-as="json" on-response="handleLoginResponse" last-response="{{loginResponse}}" method="POST" with-credentials>
     </iron-ajax>
 
     <app-indexeddb-mirror key="session" session="{{liveSession.user_id}}" data="{{liveSession}}" persisted-data="{{session}}">
