@@ -1,4 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 
 <dom-module id="superlogin-authentication">
   <template>
@@ -7,7 +9,12 @@
         display: block;
       }
     </style>
-    <h2>Hello [[prop1]]</h2>
+
+    <iron-ajax id="ajax" headers="{{header}}" url="{{authUrl}}/auth/login" handle-as="json" on-response="handleLoginResponse" last-response="{{loginResponse}}" method="POST">
+    </iron-ajax>
+
+    <app-indexeddb-mirror key="session" session="{{liveSession.user_id}}" data="{{liveSession}}" persisted-data="{{session}}">
+    </app-indexeddb-mirror>
   </template>
 
   <script>
@@ -22,8 +29,11 @@
           notify: true,
           value: 'en'
         },
-        resources: {
+        header: {
           type: Object,
+          value: function() {
+            return {};
+          },
           notify: true
         },
         authUrl: {
@@ -32,26 +42,13 @@
         },
         username: {
           type: String,
-          // observer: 'updateInfo',
           notify: true
         },
         password: {
           type: String,
-          // observer: 'updateInfo',
           notify: true
         },
-        userInfo: {
-          type: Object,
-          value: function() {
-            return {};
-          },
-          notify: true
-        },
-        responseMsg: {
-          type: Object,
-          notify: true
-        },
-        registrationResponse: {
+        loginResponse: {
           type: Object,
           notify: true
         },
@@ -63,52 +60,32 @@
           type: Object,
           notify: true
         },
-        registrationParams: {
-          type: Object,
-          notify: true
-        },
-        loginParams: {
-          type: Object,
-          notify: true
-        },
         msg: {
           type: Object,
           notify: true
         }
       },
-      // updateInfo: function(updates) {
-      //   var info = {};
-      //   info.password = this.password;
-      //   info.confirmPassword = this.password;
-      //   info.username = this.username;
-      //   if (updates !== undefined && updates !== null) {
-      //     for (var k in updates) {
-      //       if (updates.hasOwnProperty(k)) {
-      //         this.set('userInfo.k', updates.hasOwnProperty(k));
-      //       }
-      //     }
-      //   }
-      // },
-      register: function() {
-        this.set(registrationParams, this.userInfo);
+      login: function(username, password) {
+        this.$.ajax.body = {
+          user: username,
+          pass: password
+        };
+        this.$.ajax.generateRequest();
       },
-      handleRegistrationResponse: function() {
-        if (this.registrationResponse.error === undefined && this.registrationResponse.error === null) {
+      handleloginResponse: function() {
+        if (this.loginResponse.error === undefined && this.loginResponse.error === null) {
           var validationErrors = "";
-          for (var item in this.registrationResponse.validationErrors) {
-            if (this.registrationResponse.validationErrors.hasOwnProperty(item)) {
-              validationErrors = validationErrors + "<br/>" + this.registrationResponse.validationErrors.item;
+          for (var item in this.loginResponse.validationErrors) {
+            if (this.loginResponse.validationErrors.hasOwnProperty(item)) {
+              validationErrors = validationErrors + "<br/>" + this.loginResponse.validationErrors.item;
             }
           }
           this.set('msg', localize('registrationError', 'username', this.username));
         } else {
           this.set('msg', localize('registrationOk', 'username', this.username));
+          this.set('liveSession', this.loginResponse);
         }
-      },
-      handleLoginResponse: function() {
-        this.liveSession;
-      },
-
+      }
     });
   </script>
 </dom-module>
