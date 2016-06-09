@@ -9,8 +9,8 @@
       }
     </style>
 
-    <iron-ajax id="ajax" url="{{authUrl}}/auth/register" handle-as="json" last-response="{{registrationResponse}}">
-    </iron-ajax>
+    <iron-ajax id="ajax" headers="{{header}}" url="{{authUrl}}/auth/register" handle-as="json" last-response="{{registrationResponse}}" method="POST"></iron-ajax>
+
   </template>
 
   <script>
@@ -25,22 +25,19 @@
           notify: true,
           value: 'en'
         },
+        header: {
+          type: Object,
+          value: function() {
+            return {};
+          },
+          notify: true
+        },
         resources: {
           type: Object,
           notify: true
         },
         authUrl: {
           type: String,
-          notify: true
-        },
-        username: {
-          type: String,
-          // observer: 'updateInfo',
-          notify: true
-        },
-        password: {
-          type: String,
-          // observer: 'updateInfo',
           notify: true
         },
         userInfo: {
@@ -58,16 +55,9 @@
           type: Object,
           notify: true
         },
-        liveSession: {
-          type: Object,
-          notify: true
-        },
         session: {
           type: Object,
-          notify: true
-        },
-        loginParams: {
-          type: Object,
+          observer: 'updateAuth',
           notify: true
         },
         msg: {
@@ -75,22 +65,18 @@
           notify: true
         }
       },
-      // updateInfo: function(updates) {
-      //   var info = {};
-      //   info.password = this.password;
-      //   info.confirmPassword = this.password;
-      //   info.username = this.username;
-      //   if (updates !== undefined && updates !== null) {
-      //     for (var k in updates) {
-      //       if (updates.hasOwnProperty(k)) {
-      //         this.set('userInfo.k', updates.hasOwnProperty(k));
-      //       }
-      //     }
-      //   }
-      // },
+      updateAuth: function() {
+        this.set('header.user', this.session.token);
+        this.set('header.pass', this.session.password);
+      },
       register: function() {
-        this.$.ajax.params = this.userInfo;
-        this.$.ajax.generateRequest();
+        // verify mandatory fields
+        if (this.userInfo.name !== undefined && this.userInfo.username !== undefined && this.userInfo.email !== undefined && this.userInfo.password !== undefined && this.userInfo.confirmPassword !== undefined) {
+          this.$.ajax.body = this.userInfo;
+          this.$.ajax.generateRequest();
+        } else {
+          var validationErrors = localize('registrationValidationError');
+        }
       },
       handleRegistrationResponse: function() {
         if (this.registrationResponse.error === undefined && this.registrationResponse.error === null) {
@@ -100,15 +86,11 @@
               validationErrors = validationErrors + "<br/>" + this.registrationResponse.validationErrors.item;
             }
           }
-          this.set('msg', localize('registrationError', 'username', this.username));
+          this.set('msg', localize('registrationError', 'username', this.userInfo.username));
         } else {
-          this.set('msg', localize('registrationOk', 'username', this.username));
+          this.set('msg', localize('registrationOk', 'username', this.userInfo.username));
         }
       },
-      handleLoginResponse: function() {
-        this.liveSession;
-      },
-
     });
   </script>
 </dom-module>
